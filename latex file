@@ -24,10 +24,12 @@ This project explores the combination of multiple layers from pre-trained langua
 \section{Introduction}
 In recent years, pre-trained language models such as BERT \cite{bert2018} and GPT \cite{gpt2018} have revolutionized Natural Language Processing (NLP), achieving state-of-the-art results across various tasks. These models are built on the Transformer architecture \cite{attention2017}, which uses self-attention mechanisms to efficiently process text by allowing each token to attend to every other token in a sequence. This mechanism creates rich contextual embeddings, making models like BERT and GPT highly effective in tasks such as text classification, question answering (QA), and named entity recognition (NER).
 \\\\
-While these models have demonstrated exceptional performance across multiple benchmarks, such as GLUE and SQuAD, there is still room for performance improvements, particularly in task accuracy and model generalization. One promising direction is the development of \textit{Frankenmodels}, which involves duplicating and recombining frozen layers from pre-trained models to create new architectures. This study explores whether duplicating specific frozen layers—particularly self-attention layers and embedding layers—can enhance model performance without additional fine-tuning, a key research gap that has not yet been thoroughly investigated.
+While these models have demonstrated exceptional performance across multiple benchmarks, such as GLUE \cite{glue2019} and SQuAD \cite{squad2016}, there remains potential for improving task accuracy and model generalization. One promising direction is the development of \textit{Frankenmodels}, which involves duplicating and recombining frozen layers from pre-trained models to create new architectures. This study explores whether duplicating specific frozen layers—particularly self-attention layers and embedding layers—can enhance model performance without additional fine-tuning. This represents a key research gap that has not yet been thoroughly investigated, especially in terms of scalability and the trade-offs between added complexity and performance gains.
 \\\\
-This research focuses on measuring and improving task-specific performance metrics, such as accuracy, precision, recall, and F1-Score, rather than optimizing computational efficiency. Our goal is to assess how the duplication of key layers affects the model's ability to generalize across NLP tasks. We hypothesize that duplicating certain critical layers will result in higher task accuracy, particularly in complex NLP tasks requiring deep contextual understanding and subtle semantic relationships.
+Research into layer duplication is relatively unexplored in NLP, though related techniques such as knowledge distillation, as shown in DistilBERT \cite{distilbert2019}, have aimed at reducing model complexity while maintaining performance. In contrast, this research focuses on enhancing performance by duplicating layers without concern for computational efficiency.
 \\
+This research aims to measure and improve task-specific performance metrics, such as accuracy, precision, recall, and F1-Score, rather than optimizing computational efficiency. We hypothesize that duplicating critical layers will result in higher task accuracy, particularly in complex NLP tasks requiring deep contextual understanding and subtle semantic relationships.
+
 \subsection{Research Questions}
 The following key \underline{research questions} guide this study:
 \begin{itemize}
@@ -37,8 +39,7 @@ The following key \underline{research questions} guide this study:
 \end{itemize}
 
 \subsection{Focus on Task Performance}
-The model's performance will be evaluated across several benchmark datasets. For instance, the GLUE benchmark includes a variety of NLP tasks such as textual entailment, sentiment classification, and sentence similarity, while the SQuAD dataset will be used to measure the model’s ability to answer factual questions. These datasets provide a comprehensive framework for evaluating the impact of layer duplication on different aspects of language understanding.
-\\\\
+The model's performance will be evaluated across several benchmark datasets. For instance, the GLUE benchmark \cite{glue2019} includes a variety of NLP tasks such as textual entailment, sentiment classification, and sentence similarity, while the SQuAD dataset \cite{squad2016} will be used to measure the model’s ability to answer factual questions. These datasets provide a comprehensive framework for evaluating the impact of layer duplication on different aspects of language understanding.
 The primary performance metrics will include:
 \begin{itemize}
     \item \textbf{Accuracy}: The proportion of correct predictions made by the model.
@@ -48,10 +49,9 @@ The primary performance metrics will include:
 By focusing on these metrics, we aim to provide a clear understanding of how Frankenmodels impact task performance, disregarding computational efficiency for the purposes of this study. Our objective is to determine whether duplicating layers such as embedding or self-attention layers can lead to measurable improvements in accuracy, robustness, and generalization across diverse NLP tasks.
 
 \subsection{Previous Work and Motivation}
-
-Prior research on pre-trained models like BERT and GPT has demonstrated that deep self-attention layers are central to the high performance of these models. However, little research has explored the potential benefits of layer duplication in enhancing task performance. Knowledge distillation techniques, such as those described in Sanh et al.’s DistilBERT \cite{distilbert2019}, have focused on compressing models to maintain performance while reducing size. Similarly, **Low-Rank Factorization** \cite{lowrank2014} has been used to simplify model architectures by reducing the dimensionality of weight matrices.
+Prior research on pre-trained models like BERT and GPT has demonstrated that deep self-attention layers are central to the high performance of these models \cite{attention2017}. However, little research has explored the potential benefits of layer duplication in enhancing task performance. Knowledge distillation techniques, such as those described in Sanh et al.’s DistilBERT \cite{distilbert2019}, have focused on compressing models to maintain performance while reducing size. Similarly, Low-Rank Factorization \cite{lowrank2014} has been used to simplify model architectures by reducing the dimensionality of weight matrices.
 \\\\
-In contrast, this study seeks to improve performance without regard for model size or computational efficiency, by duplicating frozen layers. The primary hypothesis is that duplicating certain layers, particularly early self-attention layers and the embedding layer, will enhance the model’s ability to perform specific NLP tasks by reinforcing the representations learned during pre-training. Repeating these layers should enable the model to better capture complex dependencies and token relationships, ultimately leading to improved performance on tasks requiring precise language understanding.
+In contrast, this study seeks to improve performance without regard for model size or computational efficiency by duplicating frozen layers. The primary hypothesis is that duplicating certain layers, particularly early self-attention layers and the embedding layer, will enhance the model’s ability to perform specific NLP tasks by reinforcing the representations learned during pre-training. Repeating these layers should enable the model to better capture complex dependencies and token relationships, ultimately leading to improved performance on tasks requiring precise language understanding.
 
 \subsection{Research Goals and Objectives}
 The main objectives of this study are:
@@ -60,26 +60,21 @@ The main objectives of this study are:
     \item To determine the optimal number of duplications per layer to maximize task accuracy.
     \item To measure the performance improvements across a variety of NLP tasks, including text classification, question answering, and named entity recognition.
 \end{itemize}
-\\
 The expected outcome of this study is to provide new insights into how Frankenmodels—architectures created by duplicating specific layers—can enhance task performance, offering a novel approach to model optimization. By addressing the underexplored area of layer duplication, this research may pave the way for further studies on the optimization of pre-trained models in NLP.
-
-
-
 \newpage
-
 \section{Methodology}
-This section provides a detailed explanation of how the Frankenmodels are constructed and evaluated. We describe the steps involved in duplicating frozen layers from pre-trained models and the experimental process for determining which layers and configurations lead to the most significant performance improvements.
+This section provides a detailed explanation of how Frankenmodels are constructed and evaluated. We describe the steps involved in duplicating frozen layers from pre-trained models and the experimental process for determining which layers and configurations lead to the most significant performance improvements.
 
 \subsection{Model Preparation}
-We started by using fully trained language models such as BERT \cite{bert2018} and GPT \cite{gpt2018} as the baseline models. These models have achieved state-of-the-art performance on various natural language processing (NLP) tasks due to their ability to capture deep contextual representations through self-attention mechanisms.
+We started by using fully trained language models such as BERT \cite{bert2018} and GPT \cite{gpt2018} as baseline models. These models have achieved state-of-the-art performance across various natural language processing (NLP) tasks due to their ability to capture deep contextual representations through self-attention mechanisms \cite{attention2017}.
 \\\\
 To create Frankenmodels, we experimented with duplicating selected frozen layers from the pre-trained models, without further fine-tuning. The key innovation of this approach is the ability to explore the impact of adding more capacity to the model by duplicating the following layers:
 \begin{itemize}
-    \item \textbf{Self-Attention Layers}: These layers capture the relationships between all tokens in the input, making them essential for understanding contextual dependencies between words.
+    \item \textbf{Self-Attention Layers}: These layers capture the relationships between all tokens in the input, making them essential for understanding contextual dependencies between words \cite{attention2017}.
     \item \textbf{Feed-Forward Layers}: These layers apply transformations to the token embeddings and add non-linearity to the model, helping it learn more complex patterns.
     \item \textbf{Embedding Layers}: These layers convert input tokens into dense vectors, representing the semantic meaning of the tokens in a continuous space.
 \end{itemize}
-Each type of layer was duplicated and added back into the model architecture. For instance, to test the effect of duplicating self-attention layers, we created a modified version of BERT where the self-attention layers were duplicated multiple times and added sequentially to the model. The model was then trained on specific NLP tasks to evaluate the performance improvements. The duplicated layers were frozen, meaning their weights were not updated during training, and the original pre-trained layers were preserved.
+Each type of layer was duplicated and added back into the model architecture. For example, to test the effect of duplicating self-attention layers, we created a modified version of BERT where the self-attention layers were duplicated multiple times and added sequentially to the model. The model was then trained on specific NLP tasks to evaluate performance improvements. The duplicated layers were frozen, meaning their weights were not updated during training, and the original pre-trained layers were preserved.
 \\\\
 This design allows us to isolate and measure the effect of adding more layers to the model without introducing additional parameters that need to be learned during fine-tuning.
 
@@ -87,7 +82,7 @@ This design allows us to isolate and measure the effect of adding more layers to
 The code was designed to support the creation and evaluation of Frankenmodels. Below, we explain the purpose of each key part of the code and the rationale behind its implementation:
 
 \subsubsection{Duplicating Layers}
-The core part of the code involves the duplication of frozen layers from the pre-trained models. For this, we implemented the \texttt{ModifiedBertModel} class, which takes a pre-trained BERT or GPT model as input and allows us to add additional frozen layers. The duplication of layers is managed by this class, where:
+The core part of the code involves duplicating frozen layers from the pre-trained models. For this, we implemented the \texttt{ModifiedBertModel} class, which takes a pre-trained BERT or GPT model as input and allows us to add additional frozen layers. The duplication of layers is managed by this class, where:
 \begin{itemize}
     \item \texttt{additional\_attn\_layers} duplicates the self-attention layers.
     \item \texttt{additional\_ff\_layers} duplicates the feed-forward layers.
@@ -95,17 +90,17 @@ The core part of the code involves the duplication of frozen layers from the pre
 \end{itemize}
 By passing these parameters when initializing the model, we can control which layers to duplicate and how many additional layers to add. The duplicated layers are appended to the model architecture in sequence after the original layers.
 \\\\
-This is critical for our experiment because it allows us to independently test the effect of different types of layer duplication on model performance.
+This approach is critical for our experiment because it allows us to independently test the effect of different types of layer duplication on model performance.
 
 \subsubsection{Training the Frankenmodels}
-Once the Frankenmodel is constructed with the duplicated layers, we train it on three benchmark NLP tasks:
+Once the Frankenmodel is constructed with the duplicated layers, we trained it on three benchmark NLP tasks:
 \begin{itemize}
-    \item \textbf{Sentiment Classification (SST-2)}: This task requires the model to classify a sentence as either positive or negative. The dataset contains thousands of sentences labeled accordingly.
-    \item \textbf{Question Answering (SQuAD)}: In this task, the model must answer questions based on a given passage of text. This task tests the model’s ability to understand and extract information from text.
+    \item \textbf{Sentiment Classification (SST-2)}: This task requires the model to classify a sentence as either positive or negative. The dataset contains thousands of sentences labeled accordingly \cite{glue2019}.
+    \item \textbf{Question Answering (SQuAD)}: In this task, the model must answer questions based on a given passage of text. This task tests the model’s ability to understand and extract information from text \cite{squad2016}.
     \item \textbf{Named Entity Recognition (CoNLL-2003)}: This is a sequence labeling task where the model needs to identify named entities such as persons, organizations, and locations within a sentence.
 \end{itemize}
 For each task, we used the \texttt{Trainer} class from the \texttt{Transformers} library to handle the training process. The code allows us to resume training from checkpoints if the process is interrupted, ensuring that we do not lose progress during long training runs. We also save the best-performing model at the end of the training process.
-\\\\
+\\
 The choice of tasks reflects the different challenges that NLP models face. Sentiment classification involves binary classification, while question answering is more complex, requiring the model to extract specific information from passages. Named entity recognition tests the model’s ability to identify and label important entities in a sequence. By evaluating Frankenmodels on these tasks, we gain insight into how layer duplication impacts different aspects of language understanding.
 
 \subsubsection{Evaluation and Metrics}
@@ -119,8 +114,7 @@ After training the Frankenmodels, we evaluated their performance using several k
 These metrics were computed for each task and across multiple configurations of the Frankenmodels. The code includes a function \texttt{compute\_metrics} that calculates these metrics after each evaluation. This function ensures that we track the performance of each model configuration in terms of its ability to generalize to different NLP tasks.
 
 \subsection{Experimental Design}
-Our experimental design involved systematically testing the effect of duplicating different types of layers in the pre-trained models. We conducted multiple experiments by varying the number of duplicated layers, ranging from zero to three additional layers for each type (self-attention, feed-forward, and embedding). Each configuration was trained and evaluated on the tasks mentioned above.
-\\
+Our experimental design involved systematically testing the effect of duplicating different types of layers in pre-trained models. We conducted multiple experiments by varying the number of duplicated layers, ranging from zero to three additional layers for each type (self-attention, feed-forward, and embedding). Each configuration was trained and evaluated on the tasks mentioned above.
 We used the following steps to guide our experiments:
 \begin{enumerate}
     \item Initialize a baseline model using BERT or GPT with no additional layers.
@@ -130,6 +124,7 @@ We used the following steps to guide our experiments:
     \item Compare the performance of different configurations to identify the optimal number of duplications for each layer type and task.
 \end{enumerate}
 This approach allows us to explore whether duplicating certain layers leads to performance improvements or if there is a point at which adding more layers results in diminishing returns. Our experiments help determine which layers are most impactful for specific NLP tasks and guide future architectural decisions for enhancing pre-trained models.
+
 
 
 \section{Results}
