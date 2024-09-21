@@ -89,7 +89,7 @@ def check_transfer(original_model, new_model, layer_index_to_duplicate, number_o
     return True
 
 
-def make_and_save_new_model(original_model, config, layer_index_to_duplicate, number_of_times_to_duplicate):
+def make_and_save_new_model(original_model, config, original_model_name, layer_index_to_duplicate, number_of_times_to_duplicate):
     """
     :return: new model with one of the old models layers duplicated
     """
@@ -98,39 +98,41 @@ def make_and_save_new_model(original_model, config, layer_index_to_duplicate, nu
     transfer_weights(original_model, new_model, layer_index_to_duplicate, number_of_times_to_duplicate)
     assert (check_transfer(original_model, new_model, layer_index_to_duplicate, number_of_times_to_duplicate))
     # Save the new model
-    save_directory = f"./models/pythia_small_{layer_index_to_duplicate}x{number_of_times_to_duplicate}"
+    save_directory = f"./models/{original_model_name}/pythia_{layer_index_to_duplicate}x{number_of_times_to_duplicate}"
     new_model.save_pretrained(save_directory)
     return new_model
 
-
+"""
+argument should be --original_model_name then:
+pythia-6.9b-v0 or pythia-70m-deduped
+"""
 def main():
     print("------------------------------------start making custom model------------------------------------")
-    # model_name = 'EleutherAI/pythia-6.9b-v0' # use this model for actual experiments
-    # small EleutherAI/pythia-70m-deduped
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--original_model_name")
+    original_model_name = parser.parse_args().original_model_name
+    original_model_full_name = f"EleutherAI/{original_model_name}"
+    print(f"making new models with {original_model_name} as the original model")
     original_model = GPTNeoXForCausalLM.from_pretrained(
-        "EleutherAI/pythia-70m-deduped",
-        revision="step3000",
-        cache_dir="./pythia-70m-deduped/step3000",
+        original_model_full_name,
+        cache_dir=original_model_name
     )
-    save_directory = "./models/original_pythia_small"
+    save_directory = f"./models/{original_model_name}/original_pythia"
     original_model.save_pretrained(save_directory)
 
     tokenizer = tokenizer = AutoTokenizer.from_pretrained(
-        "EleutherAI/pythia-70m-deduped",
-        revision="step3000",
-        cache_dir="./pythia-70m-deduped/step3000",
+        original_model_full_name,
+        cache_dir=f"./{original_model_name}"
     )
     # Save the tokenizer
-    save_directory = "./tokenizers/pythia_small_tokenizer"
+    save_directory = f"./tokenizers/{original_model_name}/pythia_tokenizer"
     tokenizer.save_pretrained(save_directory)
-
-
     config = GPTNeoXConfig.from_pretrained('EleutherAI/pythia-70m')
     original_model_number_of_layers = len(original_model.gpt_neox.layers)
     times_to_duplicate_list = [1, 2, 4, 8, 16]
     for layer_index_to_duplicate in range(original_model_number_of_layers):
         for times_to_duplicate in times_to_duplicate_list:
-            make_and_save_new_model(original_model, config, layer_index_to_duplicate, times_to_duplicate)
+            make_and_save_new_model(original_model, config, original_model_name, layer_index_to_duplicate, times_to_duplicate)
     print("------------------------------------done making custom model------------------------------------")
 
 

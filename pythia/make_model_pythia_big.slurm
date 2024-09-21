@@ -1,8 +1,8 @@
 #! /bin/sh
 
-#SBATCH --job-name=use_pythia_small
-#SBATCH --output=./logs/use_pythia_small_logs.out
-#SBATCH --error=./errors/use_pythia_small_errors.out
+#SBATCH --job-name=make_pythia
+#SBATCH --output=./logs/make_pythia_logs.out
+#SBATCH --error=./errors/make_pythia_errors.out
 #SBATCH --partition=killable
 #SBATCH --time=1000 # max time (minutes)
 #SBATCH --signal=USR1@120 # how to end job when time’s up
@@ -12,4 +12,4 @@
 #SBATCH --cpus-per-task=4 # CPU cores per process
 #SBATCH --gpus=1 # GPUs in total
 
-python use_saved_model.py
+python make_model_pythia.py --original_model_name pythia-6.9b-v0
