@@ -95,6 +95,7 @@ def make_and_save_new_model(original_model, config, original_model_name, layer_i
     """
     original_numer_of_layers = config.num_hidden_layers
     new_model = CustomGPTNeoXForCausalLM(config, original_numer_of_layers + number_of_times_to_duplicate)
+    print(f"new model architecture: {new_model}")
     transfer_weights(original_model, new_model, layer_index_to_duplicate, number_of_times_to_duplicate)
     assert (check_transfer(original_model, new_model, layer_index_to_duplicate, number_of_times_to_duplicate))
     # Save the new model
@@ -117,6 +118,7 @@ def main():
         original_model_full_name,
         cache_dir=original_model_name
     )
+    print(f"original model architecture: {original_model}")
     save_directory = f"./models/{original_model_name}/original_pythia"
     original_model.save_pretrained(save_directory)
 
@@ -127,7 +129,7 @@ def main():
     # Save the tokenizer
     save_directory = f"./tokenizers/{original_model_name}/pythia_tokenizer"
     tokenizer.save_pretrained(save_directory)
-    config = GPTNeoXConfig.from_pretrained('EleutherAI/pythia-70m')
+    config = GPTNeoXConfig.from_pretrained(original_model_full_name)
     original_model_number_of_layers = len(original_model.gpt_neox.layers)
     times_to_duplicate_list = [1, 2, 4, 8, 16]
     for layer_index_to_duplicate in range(original_model_number_of_layers):
