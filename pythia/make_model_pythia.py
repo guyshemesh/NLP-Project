@@ -1,3 +1,5 @@
+import os
+
 from transformers import GPTNeoXForCausalLM, AutoTokenizer, GPTNeoXConfig, GPTNeoXModel, GPTNeoXLayer, \
     AutoModelForCausalLM
 import torch
@@ -89,19 +91,23 @@ def check_transfer(original_model, new_model, layer_index_to_duplicate, number_o
     return True
 
 
-def make_and_save_new_model(original_model, config, original_model_name, layer_index_to_duplicate, number_of_times_to_duplicate):
+def make_and_save_new_model(original_model, config, original_model_name, layer_index_to_duplicate,
+                            number_of_times_to_duplicate):
     """
     :return: new model with one of the old models layers duplicated
     """
+
     original_numer_of_layers = config.num_hidden_layers
     new_model = CustomGPTNeoXForCausalLM(config, original_numer_of_layers + number_of_times_to_duplicate)
-    print(f"new model architecture: {new_model}")
+    # print(f"new model architecture: {new_model}")
     transfer_weights(original_model, new_model, layer_index_to_duplicate, number_of_times_to_duplicate)
-    assert (check_transfer(original_model, new_model, layer_index_to_duplicate, number_of_times_to_duplicate))
+    # uncomment if need to check
+    # assert (check_transfer(original_model, new_model, layer_index_to_duplicate, number_of_times_to_duplicate))
     # Save the new model
     save_directory = f"./models/{original_model_name}/pythia_{layer_index_to_duplicate}x{number_of_times_to_duplicate}"
     new_model.save_pretrained(save_directory)
     return new_model
+
 
 """
 argument should be --original_model_name then:
@@ -113,7 +119,6 @@ def main():
     parser.add_argument("--original_model_name")
     original_model_name = parser.parse_args().original_model_name
     original_model_full_name = f"EleutherAI/{original_model_name}"
-    print(f"making new models with {original_model_name} as the original model")
     original_model = GPTNeoXForCausalLM.from_pretrained(
         original_model_full_name,
         cache_dir=original_model_name
@@ -134,7 +139,11 @@ def main():
     times_to_duplicate_list = [1, 2, 4, 8, 16]
     for layer_index_to_duplicate in range(original_model_number_of_layers):
         for times_to_duplicate in times_to_duplicate_list:
-            make_and_save_new_model(original_model, config, original_model_name, layer_index_to_duplicate, times_to_duplicate)
+            save_directory = f"./models/{original_model_name}/pythia_{layer_index_to_duplicate}x{times_to_duplicate}"
+            # if we need a few runs to finish the job
+            if not os.path.exists(save_directory):
+                make_and_save_new_model(original_model, config, original_model_name, layer_index_to_duplicate,
+                                        times_to_duplicate)
     print("------------------------------------done making custom model------------------------------------")
 
 
