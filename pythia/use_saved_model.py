@@ -19,10 +19,12 @@ def main():
     print("------------------------------------start prompting model------------------------------------")
     parser = argparse.ArgumentParser()
     parser.add_argument("--original_model_name")
+    parser.add_argument("--new_model_name")
     original_model_name = parser.parse_args().original_model_name
+    new_model_name = parser.parse_args().new_model_name
 
     original_model = GPTNeoXForCausalLM.from_pretrained(f"./models/{original_model_name}/original_pythia")
-    custom_model = GPTNeoXForCausalLM.from_pretrained(f"./models/{original_model_name}/pythia_4x1")
+    custom_model = GPTNeoXForCausalLM.from_pretrained(f"./models/{original_model_name}/{new_model_name}")
     tokenizer = AutoTokenizer.from_pretrained(f"./tokenizers/{original_model_name}/pythia_tokenizer")
     inputs = tokenizer("Once upon a time", return_tensors="pt")
     original_response = generate_response(original_model, tokenizer, inputs)

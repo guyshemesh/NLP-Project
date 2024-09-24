@@ -1,6 +1,6 @@
 #! /bin/sh
 
-#SBATCH --job-name=use_pythia_small
+#SBATCH --job-name=use_pythia
 #SBATCH --output=./logs/use_pythia_logs.out
 #SBATCH --error=./errors/use_pythia_errors.out
 #SBATCH --partition=killable
@@ -12,4 +12,4 @@
 #SBATCH --cpus-per-task=4 # CPU cores per process
 #SBATCH --gpus=1 # GPUs in total
 
-python use_saved_model.py --original_model_name pythia-70m-deduped
+python use_saved_model.py --original_model_name pythia-6.9b-v0 --new_model_name pythia_4x1
