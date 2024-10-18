@@ -14,7 +14,7 @@ def load_pythia_model():
 def main():
     print("start main()")
     # TODO delete 100 and write None instead!
-    task = bigbench_tasks.get_task(dataset="analogical_reasoning", number_json_examples=100, number_json_shots=2)
+    task = bigbench_tasks.get_task(dataset="elementary_math_qa", number_json_examples=100, number_json_shots=2)
     model = load_pythia_model()
     score_data = bigbench_tasks.evaluate_model_task(model, task)
     print("end main()")
