@@ -5,12 +5,12 @@ from bootstrapers import bootstrap_model_dirs, bootstrap_tokenizer_dirs, bootstr
     bootstrap_number_of_shots
 import pandas as pd
 
-def load_pythia_model(model_full_path, tokenizer_full_dir):
+def load_pythia_model(model_name, model_full_path, tokenizer_full_dir):
     print("start load_pythia_model()")
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_full_dir)
     model = GPTNeoXForCausalLM.from_pretrained(model_full_path)
     print("end load_pythia_model() and start PythiaModel")
-    return pythia_model.PythiaModel("original_pythia", model, tokenizer, "Original Pythia")
+    return pythia_model.PythiaModel(model_name, model, tokenizer)
 
 
 def run_pipeline(model_dirs, tokenizer_dirs, model_names, task_names, number_of_shots):
@@ -24,7 +24,7 @@ def run_pipeline(model_dirs, tokenizer_dirs, model_names, task_names, number_of_
                     tokenizer_full_dir = tokenizer_dirs[base_model]
                     task = bigbench_tasks.get_task(dataset=task_name, number_json_examples=100,
                                                    number_json_shots=number_of_shots)  # TODO delete 100 and write None/big number instead!
-                    model = load_pythia_model(model_full_path, tokenizer_full_dir)
+                    model = load_pythia_model(model_name, model_full_path, tokenizer_full_dir)
                     score_data = bigbench_tasks.evaluate_model_task(model, task)
                     results_df = results_df.append({'base_model': base_model, 'model_name': model_name, 'task_name': task_name, 'score_data': score_data}, ignore_index=True)
                     print(score_data)

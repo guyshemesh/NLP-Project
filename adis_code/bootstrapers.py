@@ -17,7 +17,7 @@ def bootstrap_model_names():
     llama3_models_names = ['original_llama3']
     for duplication_factor in duplication_factors:
         for layer_to_dup in range(llama3_num_layers):
-            llama3_models_names.append(f"pythia_{layer_to_dup}x{duplication_factor}")
+            llama3_models_names.append(f"llama3_{layer_to_dup}x{duplication_factor}")
 
     model_names = {
         'pythia_small': pythia_small_models_names,

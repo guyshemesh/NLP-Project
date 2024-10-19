@@ -7,14 +7,18 @@ from torch.nn.functional import log_softmax
 
 class PythiaModel(model.Model):
     """Initialize the specified Pythia model."""
-    def __init__(self, model_name, model, tokenizer, model_description):
+    def __init__(self, model_name, model, tokenizer):
         super().__init__()
         self.model_name = model_name
         self.model = model
         self.tokenizer = tokenizer
-        self.model_description = model_description
-    
-    
+        if self.tokenizer.eos_token is not None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        else:
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+            self.tokenizer.pad_token = '[PAD]'
+
+
     """Generates text for given inputs."""
     def generate_text(self, inputs, max_length=100, stop_string=None, output_regex=None):
         if isinstance(inputs, str):
@@ -50,79 +54,6 @@ class PythiaModel(model.Model):
     
     """Computes conditional log probabilities of targets given inputs."""
     def cond_log_prob(self, inputs, targets, absolute_normalization=False):
-        # print("start cond_log_prob()")
-        # log_probs = []
-        # for input_str, target_list in zip(inputs, targets):
-        #     input_ids = self.tokenizer(input_str, return_tensors="pt").input_ids
-        #     input_len = input_ids.shape[1]
-        #     target_log_probs = []
-
-        #     for target_str in target_list:
-        #         full_input = input_str + target_str
-        #         full_input_ids = self.tokenizer(full_input, return_tensors="pt").input_ids
-
-        #         with torch.no_grad():
-        #             output = self.model(full_input_ids, labels=full_input_ids)
-        #             log_prob = -output.loss.item()
-
-        #         # We are interested in the log prob of the target completion only, not the input
-        #         target_log_prob = log_prob - input_len  # Subtract log prob of the input sequence
-        #         target_log_probs.append(target_log_prob)
-
-        #     log_probs.append(target_log_probs)
-        
-        # print("end cond_log_prob()")
-        # return log_probs
-        
-        # if isinstance(inputs, str):
-        #     inputs = [inputs]
-        # if isinstance(targets[0], str):
-        #     targets = [targets]
-
-        # log_probs_list = []
-
-        # for input_text, target_list in zip(inputs, targets):
-        #     # Tokenize the input and get input length
-        #     input_tokens = self.tokenizer(input_text, return_tensors="pt").input_ids
-        #     input_len = input_tokens.size(1)
-
-        #     target_log_probs = []
-
-        #     for target in target_list:
-        #         # Tokenize the target and concatenate with input tokens
-        #         target_tokens = self.tokenizer(target, return_tensors="pt").input_ids
-        #         combined_tokens = torch.cat([input_tokens, target_tokens], dim=1)
-        #         combined_tokens = combined_tokens.to(self.model.device)  # ?
-
-        #         # Get logits from the model
-        #         with torch.no_grad():
-        #             output = self.model(combined_tokens)
-        #             if isinstance(output, tuple):
-        #                 logits = output[0]
-        #             else:
-        #                 logits = output.logits
-
-            #     # Extract relevant logits for the target tokens
-            #     target_logits = logits[:, input_len - 1:-1, :]  # (1, target_len, vocab_size)
-
-            #     # Calculate log probabilities along the vocab dimension
-            #     log_probs = log_softmax(target_logits, dim=-1)  # (1, target_len, vocab_size)
-
-            #     # Gather the log probabilities for the correct target tokens
-            #     selected_log_probs = log_probs.gather(2, target_tokens.unsqueeze(-1)).squeeze(-1)  # (1, target_len)
-
-            #     # Sum the log probabilities to get total log prob for this target
-            #     total_log_prob = selected_log_probs.sum().item()
-
-            #     if absolute_normalization:
-            #         total_log_prob /= target_tokens.size(1)
-
-                # target_log_probs.append(total_log_prob)
-
-        #     log_probs_list.append(target_log_probs)
-
-        # return log_probs_list
-
         if isinstance(inputs, str):
             inputs = [inputs]
         if isinstance(targets, list) and isinstance(targets[0], str):
@@ -153,18 +84,15 @@ class PythiaModel(model.Model):
     
 
     """Returns ModelData for this Pythia model."""
-    def model_data(self):   
-        # return model.ModelData(
-        #     model_family="Pythia",
-        #     #model_name=self.model_name,
-        #     model_name="test",
-        #     total_params=self.model.num_parameters(),
-        #     non_embedding_params=self.model.num_parameters(),  # self.model.config.n_params - self.model.config.vocab_size * self.model.config.n_embd
-        #     flop_matched_non_embedding_params=self.model.num_parameters(),  # self.model.config.n_params
-        #     training_batch_size=1024,
-        #     training_steps=50000,
-        #     # description=self.model_description,
-        #     description="test",
-        #     decoding_params={}
-        # )
-        return model.ModelData()
+    def model_data(self):
+        return model.ModelData(
+            model_family="pythia",
+            model_name=self.model_name,
+            total_params=6900000000,
+            non_embedding_params=6444163072,
+            flop_matched_non_embedding_params=6444163072,
+            training_batch_size=2097152,
+            training_steps=143000,
+            description=self.model_name,
+            decoding_params={}
+        )
