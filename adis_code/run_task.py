@@ -1,11 +1,9 @@
-from typing import List
 import bigbench_tasks
 import pythia_model
 from transformers import AutoTokenizer, GPTNeoXForCausalLM
 from bootstrapers import bootstrap_model_dirs, bootstrap_tokenizer_dirs, bootstrap_model_names, bootstrap_task_names, \
     bootstrap_number_of_shots
-from result_data import ResultEntry, print_results
-
+import pandas as pd
 
 def load_pythia_model(model_full_path, tokenizer_full_dir):
     print("start load_pythia_model()")
@@ -16,7 +14,7 @@ def load_pythia_model(model_full_path, tokenizer_full_dir):
 
 
 def run_pipeline(model_dirs, tokenizer_dirs, model_names, task_names, number_of_shots):
-    results = []
+    results_df = pd.DataFrame(columns=['base_model', 'model_name', 'task_name', 'score_data'])
     for task_name in task_names:
         for base_model, model_dir in model_dirs.items():
             for model_name in model_names[base_model]:
@@ -28,10 +26,10 @@ def run_pipeline(model_dirs, tokenizer_dirs, model_names, task_names, number_of_
                                                    number_json_shots=number_of_shots)  # TODO delete 100 and write None/big number instead!
                     model = load_pythia_model(model_full_path, tokenizer_full_dir)
                     score_data = bigbench_tasks.evaluate_model_task(model, task)
-                    results.append(ResultEntry(base_model, model_name, task_name, score_data))
+                    results_df = results_df.append({'base_model': base_model, 'model_name': model_name, 'task_name': task_name, 'score_data': score_data}, ignore_index=True)
                     print(score_data)
                     # return  # TODO delete this
-    return results
+    return results_df
 
 
 def main():
@@ -41,8 +39,10 @@ def main():
     model_names = bootstrap_model_names()
     task_names = bootstrap_task_names()
     number_of_shots = bootstrap_number_of_shots()
-    results = run_pipeline(model_dirs, tokenizer_dirs, model_names, task_names, number_of_shots)
-    print_results(results)
+    results_df = run_pipeline(model_dirs, tokenizer_dirs, model_names, task_names, number_of_shots)
+    pd.set_option('display.max_columns', None)  # Show all columns
+    pd.set_option('display.max_rows', None)  # Show all rows
+    print(results_df)
     print("end main()")
 
 
