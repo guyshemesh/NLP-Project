@@ -26,7 +26,8 @@ def run_pipeline(model_dirs, tokenizer_dirs, model_names, task_names, number_of_
                                                    number_json_shots=number_of_shots)  # TODO delete 100 and write None/big number instead!
                     model = load_pythia_model(model_name, model_full_path, tokenizer_full_dir)
                     score_data = bigbench_tasks.evaluate_model_task(model, task)
-                    results_df = results_df.append({'base_model': base_model, 'model_name': model_name, 'task_name': task_name, 'score_data': score_data}, ignore_index=True)
+                    new_row = pd.DataFrame([{'base_model': base_model, 'model_name': model_name, 'task_name': task_name, 'score_data': score_data}])
+                    results_df = pd.concat([results_df, new_row], ignore_index=True)
                     print(score_data)
                     # return  # TODO delete this
     return results_df
