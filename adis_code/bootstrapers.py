@@ -46,7 +46,7 @@ def bootstrap_tokenizer_dirs():
 
 
 def bootstrap_task_names():
-    return ["elementary_math_qa", "com2sense"]
+    return ["elementary_math_qa"]
 
 
 def bootstrap_number_of_shots():
