@@ -4,7 +4,7 @@
 #SBATCH --output=./logs/run.out
 #SBATCH --error=./errors/run.out
 #SBATCH --partition=killable
-#SBATCH --time=1000 # max time (minutes)
+#SBATCH --time=1440 # max time (minutes)
 #SBATCH --signal=USR1@120
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
