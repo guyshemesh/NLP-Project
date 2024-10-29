@@ -1,0 +1,37 @@
+base_model,model_name,task_name,score
+pythia_small,original_pythia,multistep_arithmetic [] depth_levels and 2 operations.,0.06
+pythia_small,original_pythia,multistep_arithmetic [] depth_levels and 3 operations.,0.1
+pythia_small,original_pythia,multistep_arithmetic [] depth_levels and 4 operations.,0.04
+pythia_small,original_pythia,multistep_arithmetic [2] depth_levels and 2 operations.,0.03
+pythia_small,original_pythia,multistep_arithmetic [2] depth_levels and 3 operations.,0.03
+pythia_small,original_pythia,multistep_arithmetic [2] depth_levels and 4 operations.,0.0
+pythia_small,original_pythia,"multistep_arithmetic [2, 2] depth_levels and 2 operations.",0.02
+pythia_small,original_pythia,"multistep_arithmetic [2, 2] depth_levels and 3 operations.",0.0
+pythia_small,original_pythia,"multistep_arithmetic [2, 2] depth_levels and 4 operations.",0.0
+pythia_small,original_pythia,"multistep_arithmetic [2, 2, 2] depth_levels and 2 operations.",0.01
+pythia_small,original_pythia,"multistep_arithmetic [2, 2, 2] depth_levels and 3 operations.",0.0
+pythia_small,original_pythia,"multistep_arithmetic [2, 2, 2] depth_levels and 4 operations.",0.01
+pythia_small,pythia_0x1,multistep_arithmetic [] depth_levels and 2 operations.,0.06
+pythia_small,pythia_0x1,multistep_arithmetic [] depth_levels and 3 operations.,0.1
+pythia_small,pythia_0x1,multistep_arithmetic [] depth_levels and 4 operations.,0.04
+pythia_small,pythia_0x1,multistep_arithmetic [2] depth_levels and 2 operations.,0.03
+pythia_small,pythia_0x1,multistep_arithmetic [2] depth_levels and 3 operations.,0.03
+pythia_small,pythia_0x1,multistep_arithmetic [2] depth_levels and 4 operations.,0.0
+pythia_small,pythia_0x1,"multistep_arithmetic [2, 2] depth_levels and 2 operations.",0.02
+pythia_small,pythia_0x1,"multistep_arithmetic [2, 2] depth_levels and 3 operations.",0.0
+pythia_small,pythia_0x1,"multistep_arithmetic [2, 2] depth_levels and 4 operations.",0.0
+pythia_small,pythia_0x1,"multistep_arithmetic [2, 2, 2] depth_levels and 2 operations.",0.01
+pythia_small,pythia_0x1,"multistep_arithmetic [2, 2, 2] depth_levels and 3 operations.",0.0
+pythia_small,pythia_0x1,"multistep_arithmetic [2, 2, 2] depth_levels and 4 operations.",0.01
+pythia_small,pythia_1x1,multistep_arithmetic [] depth_levels and 2 operations.,0.06
+pythia_small,pythia_1x1,multistep_arithmetic [] depth_levels and 3 operations.,0.1
+pythia_small,pythia_1x1,multistep_arithmetic [] depth_levels and 4 operations.,0.04
+pythia_small,pythia_1x1,multistep_arithmetic [2] depth_levels and 2 operations.,0.03
+pythia_small,pythia_1x1,multistep_arithmetic [2] depth_levels and 3 operations.,0.03
+pythia_small,pythia_1x1,multistep_arithmetic [2] depth_levels and 4 operations.,0.0
+pythia_small,pythia_1x1,"multistep_arithmetic [2, 2] depth_levels and 2 operations.",0.02
+pythia_small,pythia_1x1,"multistep_arithmetic [2, 2] depth_levels and 3 operations.",0.0
+pythia_small,pythia_1x1,"multistep_arithmetic [2, 2] depth_levels and 4 operations.",0.0
+pythia_small,pythia_1x1,"multistep_arithmetic [2, 2, 2] depth_levels and 2 operations.",0.01
+pythia_small,pythia_1x1,"multistep_arithmetic [2, 2, 2] depth_levels and 3 operations.",0.0
+pythia_small,pythia_1x1,"multistep_arithmetic [2, 2, 2] depth_levels and 4 operations.",0.01
