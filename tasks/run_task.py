@@ -34,7 +34,7 @@ def run_pipeline(model_dirs, tokenizer_dirs, model_names, task_names, number_of_
                     model = load_model(model_name, model_full_path, tokenizer_full_dir)
                     scores_data = bigbench_tasks.evaluate_model_task(model, task)
                     # each task has different evaluation matric as preferred_score
-                    scores_and_subtasks = [(score_data.score_dict[scores_data.preferred_score], score_data.subtask_description) for score_data in scores_data]
+                    scores_and_subtasks = [(score_data.score_dict[score_data.preferred_score], score_data.subtask_description) for score_data in scores_data]
                     for score, sub_task in scores_and_subtasks:
                         new_row = pd.DataFrame([{'base_model': base_model, 'model_name': model_name, 'task_name': task_name + " " + sub_task,
                                                  'score': score}])
