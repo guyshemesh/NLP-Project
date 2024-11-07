@@ -1,3 +1,0 @@
-base_model,model_name,task_name,score
-llama3,original_llama3,analogical_similarity analogical_similarity,0.145
-llama3,llama3_0x1,analogical_similarity analogical_similarity,0.145

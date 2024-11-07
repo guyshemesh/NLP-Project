@@ -1,6 +1,0 @@
-base_model,model_name,task_name,score
-llama3,original_llama3,fantasy_reasoning fantasy_reasoning,0.6417910447761194
-llama3,llama3_0x1,fantasy_reasoning fantasy_reasoning,0.6417910447761194
-llama3,llama3_1x1,fantasy_reasoning fantasy_reasoning,0.64
-llama3,llama3_2x1,fantasy_reasoning fantasy_reasoning,0.64
-llama3,llama3_3x1,fantasy_reasoning fantasy_reasoning,0.36
