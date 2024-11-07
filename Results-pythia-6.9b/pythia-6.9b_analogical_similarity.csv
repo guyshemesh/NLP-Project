@@ -1,3 +1,0 @@
-base_model,model_name,task_name,score
-pythia_big,original_pythia,analogical_similarity analogical_similarity,0.145
-pythia_big,pythia_0x1,analogical_similarity analogical_similarity,0.145
