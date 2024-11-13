@@ -46,8 +46,9 @@ def bootstrap_tokenizer_dirs():
 
 
 def bootstrap_task_names():
-    return ["elementary_math_qa"]
+    return ["fantasy_reasoning", "analogical_similarity", "codenames", "conceptual_combinations", "elementary_math_qa",
+            "discourse_marker_prediction", "boolean_expressions", "causal_judgment", "date_understanding"]
 
 
 def bootstrap_number_of_shots():
-    return 2  # TODO, change? make it a list?
+    return 2
