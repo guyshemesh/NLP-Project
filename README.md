@@ -16,6 +16,7 @@ The findings indicate that duplicating specific layers in frozen LLMs can yield 
     ├── models/                      # Scripts to create custom models by duplicating layers
     ├── tasks/                       # Code for loading tasks, running evaluations, and saving results
     ├── results/                     # Output files with performance metrics for each task
+    ├── requirements.txt             # List of dependencies to set up the environment
     └── README.md                    # Project documentation (this file)
 
 ### Key Directories
